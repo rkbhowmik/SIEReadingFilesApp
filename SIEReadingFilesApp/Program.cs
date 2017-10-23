@@ -30,11 +30,11 @@ namespace SIEReadingFilesApp
 			
 			while ((line = file.ReadLine()) != null)
 			{
-				string pattern = @"#TRANS (\d{4}) {.*} (-?\d*.\d*)"; // Example: #TRANS 1630 {} 1.00
+				string pattern = @"#TRANS (\d{4}) {.*} (-?\d*)"; // Example: #TRANS 1630 {} 1.00
 				var match = Regex.Match(line, pattern);
 				if (match.Success)
 				{
-					double converted = Convert.ToDouble(match.Groups[2].Value.Replace('.', ','));
+					double converted = Convert.ToDouble(match.Groups[2].Value);
 					values.Add(converted);
 					counter++;
 				}
