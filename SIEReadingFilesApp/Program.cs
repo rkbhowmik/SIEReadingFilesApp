@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace SIEReadingFilesApp
 {
@@ -12,44 +13,61 @@ namespace SIEReadingFilesApp
 	{
 		static void Main(string[] args)
 		{
-			Console.ForegroundColor = ConsoleColor.Green;
-			Console.WriteLine("Welcome to the new practice app");
-			Console.ResetColor();
-			Console.WriteLine("Enter your file name with path:");
+			GreetingMessage();
+			
+			Console.WriteLine("\nEnter your file name with path:\n");
 
 			// Take file name as a string
-			string fileName = Console.ReadLine();
-			StreamReader file = new StreamReader(fileName);
+			string FileName = Console.ReadLine();
+			StreamReader file = new StreamReader(FileName);
 
 			// declaring variables
 			int counter = 0;
 			string line;
+
 			//creating a list of array with double data type
 			List<double> values = new List<double>();
-
-			
+						
 			while ((line = file.ReadLine()) != null)
 			{
-				string pattern = @"#TRANS (\d{4}) {.*} (-?\d*)"; // Example: #TRANS 1630 {} 1.00
+				string pattern = @"#TRANS (\d{4}) {.*} (-?\d*.\d*)"; // Example: #TRANS 1630 {} 1.00
 				var match = Regex.Match(line, pattern);
+			
 				if (match.Success)
 				{
-					double converted = Convert.ToDouble(match.Groups[2].Value);
+					double converted = MatchingMethod(match);
 					values.Add(converted);
 					counter++;
 				}
 			}
 			var sum = values.Sum();
-			Console.ForegroundColor = ConsoleColor.Red;
-			Console.WriteLine($"Total amount {0}", sum);
-			Console.ResetColor();
 
-			file.Close();
+			PrintColor (ConsoleColor.Red);
+			Console.WriteLine($"\n\nTotal amount {0}\n", sum);
+			Console.ResetColor();
 			Console.WriteLine("There were {0} lines.", counter);
-			
-			// Suspend the screen.  
 			Console.ReadLine();
 
+		}
+
+		private static double MatchingMethod(Match match)
+		{
+			return Convert.ToDouble(match.Groups[2].Value, provider: CultureInfo.InvariantCulture);
+		}
+
+		//Greetings
+		static void GreetingMessage()
+		{
+			Console.ForegroundColor = ConsoleColor.Green;
+			Console.WriteLine("Welcome to SIE Reading Files App");
+			Console.WriteLine("Date: 2017-10-23");
+			Console.WriteLine("---------------------\n");
+			Console.ResetColor();
+		}
+		//print color message
+		static void PrintColor(ConsoleColor color)
+		{
+			Console.ForegroundColor = color;
 		}
 	}
 }
